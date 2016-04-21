@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
+    <node vmImage="vSRX [de90d7f5-0c60-4991-9bf1-d93edb38fab0]" location="276,259" subtype="vSRX" type="SIMPLE" name="vsrx-1">
+        <extensions>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+            <entry type="String" key="config">version 12.1X46-D10.2;
+groups {
+    node0 {
+        system {
+            host-name srx-01;
+        }
+        interfaces {
+            fxp0 {
+                unit 0 {
+                    family inet {
+                        address 172.16.20.1/24;
+                    }
+                }
+            }
+        }
+    }
+    node1 {
+        system {
+            host-name srx-02;
+        }
+        interfaces {
+            fxp0 {
+                unit 0 {                
+                    family inet {
+                        address 172.16.20.2/24;
+                    }
+                }
+            }
+        }
+    }
+}
+apply-groups &quot;${node}&quot;;
+system {
+    host-name nyc-srx01;
+    root-authentication {
+        encrypted-password &quot;$1$d11MMjA0$uYiayhkN0BMXAHVSqgMei1&quot;; ## SECRET-DATA
+    }
+    services {
+        ssh;
+        web-management {
+            http {
+                interface ge-0/0/0.0;
+            }
+        }
+    }
+    syslog {                            
+        file messages {
+            any any;
+        }
+    }
+    license {
+        autoupdate {
+            url https://ae1.juniper.net/junos/key_retrieval;
+        }
+    }
+}
+chassis {
+    cluster {
+        reth-count 2;
+        redundancy-group 0 {
+            node 0 priority 100;
+            node 1 priority 99;
+        }
+        redundancy-group 1 {
+            node 0 priority 100;
+        }
+    }
+}</entry>
+        </extensions>
+        <interface name="ge-0/0/1" id="0"/>
+        <interface name="ge-0/0/2" id="1"/>
+        <interface name="ge-0/0/3" id="2"/>
+        <interface name="ge-0/0/4" id="3"/>
+        <interface name="ge-0/0/5" id="4"/>
+        <interface name="ge-0/0/6" id="5"/>
+        <interface name="ge-0/0/7" id="6"/>
+        <interface name="ge-0/0/8" id="7"/>
+    </node>
+    <node vmImage="vSRX [de90d7f5-0c60-4991-9bf1-d93edb38fab0]" location="680,258" subtype="vSRX" type="SIMPLE" name="vsrx-2">
+        <extensions>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+            <entry type="String" key="config">version 12.1X46-D10.2;
+groups {
+    node0 {
+        system {
+            host-name srx-01;
+        }
+        interfaces {
+            fxp0 {
+                unit 0 {
+                    family inet {
+                        address 172.16.20.1/24;
+                    }
+                }
+            }
+        }
+    }
+    node1 {
+        system {
+            host-name srx-02;
+        }
+        interfaces {
+            fxp0 {
+                unit 0 {                
+                    family inet {
+                        address 172.16.20.2/24;
+                    }
+                }
+            }
+        }
+    }
+}
+apply-groups &quot;${node}&quot;;
+system {
+    host-name nyc-srx01;
+    root-authentication {
+        encrypted-password &quot;$1$d11MMjA0$uYiayhkN0BMXAHVSqgMei1&quot;; ## SECRET-DATA
+    }
+    services {
+        ssh;
+        web-management {
+            http {
+                interface ge-0/0/0.0;
+            }
+        }
+    }
+    syslog {                            
+        file messages {
+            any any;
+        }
+    }
+    license {
+        autoupdate {
+            url https://ae1.juniper.net/junos/key_retrieval;
+        }
+    }
+}
+chassis {
+    cluster {
+        reth-count 2;
+        redundancy-group 0 {
+            node 0 priority 100;
+            node 1 priority 99;
+        }
+        redundancy-group 1 {
+            node 0 priority 100;
+        }
+    }
+}</entry>
+        </extensions>
+        <interface name="ge-0/0/1" id="0"/>
+        <interface name="ge-0/0/2" id="1"/>
+        <interface name="ge-0/0/3" id="2"/>
+        <interface name="ge-0/0/4" id="3"/>
+        <interface name="ge-0/0/5" id="4"/>
+        <interface name="ge-0/0/6" id="5"/>
+        <interface name="ge-0/0/7" id="6"/>
+        <interface name="ge-0/0/8" id="7"/>
+    </node>
+    <node location="472,137" subtype="IOSvL2" type="SIMPLE" name="pub_swt">
+        <extensions>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 19:13:54 UTC Sat Aug 1 2015
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname Public_l2sw
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ media-type rj45
+ negotiation auto
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+!
+end</entry>
+        </extensions>
+        <interface name="GigabitEthernet0/1" id="0"/>
+        <interface name="GigabitEthernet0/2" id="1"/>
+        <interface name="GigabitEthernet0/3" id="2"/>
+        <interface name="GigabitEthernet1/0" id="3"/>
+        <interface name="GigabitEthernet1/1" id="4"/>
+        <interface name="GigabitEthernet1/2" id="5"/>
+    </node>
+    <node location="487,385" subtype="IOSvL2" type="SIMPLE" name="priv_swt">
+        <extensions>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 19:13:50 UTC Sat Aug 1 2015
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname priv_l2sw
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/3
+ media-type rj45
+ negotiation auto
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+!
+end</entry>
+        </extensions>
+        <interface name="GigabitEthernet0/1" id="0"/>
+        <interface name="GigabitEthernet0/2" id="1"/>
+        <interface name="GigabitEthernet3/3" id="14"/>
+    </node>
+    <node location="492,514" subtype="FLAT" type="ASSET" name="flat-1">
+        <interface name="link0" id="0"/>
+    </node>
+    <connection src="/virl:topology/virl:node[1]/virl:interface[1]" dst="/virl:topology/virl:node[2]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[2]/virl:interface[2]" dst="/virl:topology/virl:node[1]/virl:interface[2]"/>
+    <connection src="/virl:topology/virl:node[1]/virl:interface[4]" dst="/virl:topology/virl:node[3]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[2]/virl:interface[4]" dst="/virl:topology/virl:node[3]/virl:interface[2]"/>
+    <connection src="/virl:topology/virl:node[1]/virl:interface[3]" dst="/virl:topology/virl:node[4]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[2]/virl:interface[3]" dst="/virl:topology/virl:node[4]/virl:interface[2]"/>
+    <connection src="/virl:topology/virl:node[4]/virl:interface[3]" dst="/virl:topology/virl:node[5]/virl:interface[1]"/>
+</topology>

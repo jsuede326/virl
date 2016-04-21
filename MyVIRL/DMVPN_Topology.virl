@@ -1,0 +1,1484 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.8" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.8/virl.xsd">
+    <node ipv4="192.168.0.1" location="165,122" subtype="IOSv" type="SIMPLE" name="iosv-1">
+        <extensions>
+            <entry type="string" key="config">!
+! Last configuration change at 00:03:57 UTC Wed Jan 28 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.1 255.255.255.255
+!
+interface Loopback1
+ ip address 66.114.78.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.238 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-2
+ ip address 10.0.0.1 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.0.0 0.0.0.3
+ network 66.114.78.0 0.0.0.255
+ network 192.168.0.1 0.0.0.0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">eigrp</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.1" name="GigabitEthernet0/1" id="0"/>
+    </node>
+    <node ipv4="192.168.0.2" location="350,125" subtype="IOSv" type="SIMPLE" name="iosv-2">
+        <extensions>
+            <entry type="String" key="AutoNetkit.ospf_area">100</entry>
+            <entry type="Boolean" key="AutoNetkit.MPLS TE enabled">false</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">ospf</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 00:10:00 UTC Wed Jan 28 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key cisco123 address 0.0.0.0        
+!
+!
+crypto ipsec transform-set TRANS2 esp-aes esp-sha-hmac 
+ mode transport
+!
+crypto ipsec profile VPN_PROF
+ set transform-set TRANS2 
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.2 255.255.255.255
+!
+interface Tunnel0
+ ip address 24.29.128.1 255.255.255.0
+ no ip redirects
+ no ip next-hop-self eigrp 1
+ no ip split-horizon eigrp 1
+ ip nhrp authentication donttell
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 99
+ tunnel source GigabitEthernet0/2
+ tunnel mode gre multipoint
+ tunnel key 100000
+ tunnel protection ipsec profile VPN_PROF
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.236 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-1
+ ip address 10.0.0.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description to iosv-9
+ ip address 10.0.0.5 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.0.0 0.0.0.3
+ network 24.29.128.0 0.0.0.255
+ network 192.168.0.2 0.0.0.0
+!
+router ospf 1
+ passive-interface Loopback0
+ network 10.0.0.4 0.0.0.3 area 0
+ network 192.168.0.2 0.0.0.0 area 0
+!
+router bgp 1
+ bgp router-id 192.168.0.2
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.0.2 mask 255.255.255.255
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.2" name="GigabitEthernet0/1" id="0"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.5" name="GigabitEthernet0/2" id="1"/>
+    </node>
+    <node ipv4="192.168.0.3" location="174,345" subtype="IOSv" type="SIMPLE" name="iosv-3">
+        <extensions>
+            <entry type="string" key="config">!
+! Last configuration change at 23:59:08 UTC Tue Jan 27 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.3 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.237 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-4
+ ip address 10.0.0.9 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.0.8 0.0.0.3
+ network 192.168.0.3 0.0.0.0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">eigrp</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.9" name="GigabitEthernet0/1" id="0"/>
+    </node>
+    <node ipv4="192.168.0.4" location="352,351" subtype="IOSv" type="SIMPLE" name="iosv-4">
+        <extensions>
+            <entry type="String" key="AutoNetkit.ospf_area">100</entry>
+            <entry type="Boolean" key="AutoNetkit.MPLS TE enabled">false</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">ospf</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 23:55:58 UTC Tue Jan 27 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key cisco123 address 0.0.0.0        
+!
+!
+crypto ipsec transform-set TRANS2 esp-aes esp-sha-hmac 
+ mode transport
+!
+crypto ipsec profile VPN_PROF
+ set transform-set TRANS2 
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.4 255.255.255.255
+!
+interface Tunnel0
+ ip address 24.29.128.4 255.255.255.0
+ no ip redirects
+ ip nhrp authentication donttell
+ ip nhrp map 24.29.128.1 10.0.0.5
+ ip nhrp map multicast 10.0.0.5
+ ip nhrp network-id 99
+ ip nhrp nhs 24.29.128.1
+ tunnel source GigabitEthernet0/2
+ tunnel mode gre multipoint
+ tunnel key 100000
+ tunnel protection ipsec profile VPN_PROF
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.241 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-3
+ ip address 10.0.0.10 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description to iosv-9
+ ip address 10.0.0.13 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.0.8 0.0.0.3
+ network 24.29.128.0 0.0.0.255
+ network 192.168.0.4 0.0.0.0
+!
+router ospf 1
+ passive-interface Loopback0
+ network 10.0.0.12 0.0.0.3 area 0
+ network 192.168.0.4 0.0.0.0 area 0
+!
+router bgp 1
+ bgp router-id 192.168.0.4
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.0.4 mask 255.255.255.255
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.10" name="GigabitEthernet0/1" id="0"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.13" name="GigabitEthernet0/2" id="1"/>
+    </node>
+    <node ipv4="192.168.0.5" location="693,120" subtype="IOSv" type="SIMPLE" name="iosv-5">
+        <extensions>
+            <entry type="String" key="AutoNetkit.ospf_area">100</entry>
+            <entry type="Boolean" key="AutoNetkit.MPLS TE enabled">false</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">ospf</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 00:08:06 UTC Wed Jan 28 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-5
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key cisco123 address 0.0.0.0        
+!
+!
+crypto ipsec transform-set TRANS2 esp-aes esp-sha-hmac 
+ mode transport
+!
+crypto ipsec profile VPN_PROF
+ set transform-set TRANS2 
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.5 255.255.255.255
+!
+interface Tunnel0
+ ip address 24.29.128.5 255.255.255.0
+ no ip redirects
+ ip nhrp authentication donttell
+ ip nhrp map 24.29.128.1 10.0.0.5
+ ip nhrp map multicast 10.0.0.5
+ ip nhrp network-id 99
+ ip nhrp nhs 24.29.128.1
+ tunnel source GigabitEthernet0/2
+ tunnel mode gre multipoint
+ tunnel key 100000
+ tunnel protection ipsec profile VPN_PROF
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.242 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-6
+ ip address 10.0.128.1 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description to iosv-10
+ ip address 10.0.128.9 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.128.0 0.0.0.3
+ network 24.29.128.0 0.0.0.255
+ network 192.168.0.5 0.0.0.0
+!
+router ospf 1
+ passive-interface Loopback0
+ network 10.0.128.8 0.0.0.3 area 0
+ network 192.168.0.5 0.0.0.0 area 0
+!
+router bgp 1
+ bgp router-id 192.168.0.5
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.0.5 mask 255.255.255.255
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.1" name="GigabitEthernet0/1" id="0"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.9" name="GigabitEthernet0/2" id="1"/>
+    </node>
+    <node ipv4="192.168.0.6" location="847,126" subtype="IOSv" type="SIMPLE" name="iosv-6">
+        <extensions>
+            <entry type="string" key="config">!
+! Last configuration change at 00:08:50 UTC Wed Jan 28 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-6
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.6 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.239 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-5
+ ip address 10.0.128.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.128.0 0.0.0.3
+ network 192.168.0.6 0.0.0.0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">eigrp</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.2" name="GigabitEthernet0/1" id="0"/>
+    </node>
+    <node ipv4="192.168.0.7" location="664,350" subtype="IOSv" type="SIMPLE" name="iosv-7">
+        <extensions>
+            <entry type="String" key="AutoNetkit.ospf_area">100</entry>
+            <entry type="Boolean" key="AutoNetkit.MPLS TE enabled">false</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">ospf</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 00:13:30 UTC Wed Jan 28 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-7
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key cisco123 address 0.0.0.0        
+!
+!
+crypto ipsec transform-set TRANS2 esp-aes esp-sha-hmac 
+ mode transport
+!
+crypto ipsec profile VPN_PROF
+ set transform-set TRANS2 
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.7 255.255.255.255
+!
+interface Tunnel0
+ ip address 24.29.128.7 255.255.255.0
+ no ip redirects
+ ip nhrp authentication donttell
+ ip nhrp map 24.29.128.1 10.0.0.5
+ ip nhrp map multicast 10.0.0.5
+ ip nhrp network-id 99
+ ip nhrp nhs 24.29.128.1
+ tunnel source GigabitEthernet0/2
+ tunnel mode gre multipoint
+ tunnel key 100000
+ tunnel protection ipsec profile VPN_PROF
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.240 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-8
+ ip address 10.0.128.5 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description to iosv-10
+ ip address 10.0.128.13 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.128.4 0.0.0.3
+ network 24.29.128.0 0.0.0.255
+ network 192.168.0.7 0.0.0.0
+!
+router ospf 1
+ passive-interface Loopback0
+ network 10.0.128.12 0.0.0.3 area 0
+ network 192.168.0.7 0.0.0.0 area 0
+!
+router bgp 1
+ bgp router-id 192.168.0.7
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.0.7 mask 255.255.255.255
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.5" name="GigabitEthernet0/1" id="0"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.13" name="GigabitEthernet0/2" id="1"/>
+    </node>
+    <node ipv4="192.168.0.8" location="851,352" subtype="IOSv" type="SIMPLE" name="iosv-8">
+        <extensions>
+            <entry type="string" key="config">!
+! Last configuration change at 00:12:45 UTC Wed Jan 28 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-8
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.8 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.243 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-7
+ ip address 10.0.128.6 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+!
+router eigrp 1
+ network 10.0.128.4 0.0.0.3
+ network 192.168.0.8 0.0.0.0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">eigrp</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.6" name="GigabitEthernet0/1" id="0"/>
+    </node>
+    <node ipv4="192.168.0.9" location="454,233" subtype="IOSv" type="SIMPLE" name="iosv-9">
+        <extensions>
+            <entry type="String" key="AutoNetkit.ospf_area">100</entry>
+            <entry type="Boolean" key="AutoNetkit.MPLS TE enabled">false</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">ospf</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 23:13:01 UTC Tue Jan 27 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-9
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.9 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.244 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-2
+ ip address 10.0.0.6 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description to iosv-4
+ ip address 10.0.0.14 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ description to iosv-10
+ ip address 10.0.0.17 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 1
+ passive-interface Loopback0
+ network 10.0.0.4 0.0.0.3 area 0
+ network 10.0.0.12 0.0.0.3 area 0
+ network 10.0.0.16 0.0.0.3 area 0
+ network 192.168.0.9 0.0.0.0 area 0
+!
+router bgp 1
+ bgp router-id 192.168.0.9
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.0.9 mask 255.255.255.255
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.6" name="GigabitEthernet0/1" id="0"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.14" name="GigabitEthernet0/2" id="1"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.17" name="GigabitEthernet0/3" id="2"/>
+    </node>
+    <node ipv4="192.168.0.10" location="592,228" subtype="IOSv" type="SIMPLE" name="iosv-10">
+        <extensions>
+            <entry type="String" key="AutoNetkit.ospf_area">100</entry>
+            <entry type="Boolean" key="AutoNetkit.MPLS TE enabled">false</entry>
+            <entry type="string" key="AutoNetkit.mgmt_ip"></entry>
+            <entry type="String" key="AutoNetkit.ibgp_role">Disabled</entry>
+            <entry type="String" key="AutoNetkit.IGP">ospf</entry>
+            <entry type="String" key="config">!
+! Last configuration change at 22:58:44 UTC Tue Jan 27 2015
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname iosv-10
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 192.168.0.10 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ ip address 10.255.0.245 255.255.0.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to iosv-9
+ ip address 10.0.0.18 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description to iosv-5
+ ip address 10.0.128.10 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ description to iosv-7
+ ip address 10.0.128.14 255.255.255.252
+ ip ospf cost 1
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 1
+ passive-interface Loopback0
+ network 10.0.0.16 0.0.0.3 area 0
+ network 10.0.128.8 0.0.0.3 area 0
+ network 10.0.128.12 0.0.0.3 area 0
+ network 192.168.0.10 0.0.0.0 area 0
+!
+router bgp 1
+ bgp router-id 192.168.0.10
+ bgp log-neighbor-changes
+ !
+ address-family ipv4
+  network 192.168.0.10 mask 255.255.255.255
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+            <entry type="Boolean" key="Auto-generate config">false</entry>
+        </extensions>
+        <interface netPrefixLenV4="30" ipv4="10.0.0.18" name="GigabitEthernet0/1" id="0"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.10" name="GigabitEthernet0/2" id="1"/>
+        <interface netPrefixLenV4="30" ipv4="10.0.128.14" name="GigabitEthernet0/3" id="2"/>
+    </node>
+    <connection src="/virl:topology/virl:node[1]/virl:interface[1]" dst="/virl:topology/virl:node[2]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[9]/virl:interface[1]" dst="/virl:topology/virl:node[2]/virl:interface[2]"/>
+    <connection src="/virl:topology/virl:node[3]/virl:interface[1]" dst="/virl:topology/virl:node[4]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[4]/virl:interface[2]" dst="/virl:topology/virl:node[9]/virl:interface[2]"/>
+    <connection src="/virl:topology/virl:node[9]/virl:interface[3]" dst="/virl:topology/virl:node[10]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[6]/virl:interface[1]" dst="/virl:topology/virl:node[5]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[5]/virl:interface[2]" dst="/virl:topology/virl:node[10]/virl:interface[2]"/>
+    <connection src="/virl:topology/virl:node[8]/virl:interface[1]" dst="/virl:topology/virl:node[7]/virl:interface[1]"/>
+    <connection src="/virl:topology/virl:node[7]/virl:interface[2]" dst="/virl:topology/virl:node[10]/virl:interface[3]"/>
+</topology>

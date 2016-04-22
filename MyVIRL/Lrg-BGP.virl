@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" simulationEngine="OPENSTACK" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
+    <extensions>
+        <entry key="AutoNetkit.enable_cdp" type="Boolean">true</entry>
+        <entry key="AutoNetkit.IGP" type="String">ospf</entry>
+        <entry key="AutoNetkit.enable_routing" type="Boolean">false</entry>
+    </extensions>
+    <node name="CustA-ASN33" type="SIMPLE" subtype="IOSv" location="255,267">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">33</entry>
+            <entry key="AutoNetkit.ibgp_role" type="String">Peer</entry>
+        </extensions>
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+        <interface id="11" name="GigabitEthernet0/12"/>
+    </node>
+    <node name="CustB-ASN44" type="SIMPLE" subtype="IOSv" location="918,263">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">44</entry>
+            <entry key="AutoNetkit.ospf_area" type="String">0</entry>
+            <entry key="AutoNetkit.IGP" type="String">ospf</entry>
+        </extensions>
+        <interface id="10" name="GigabitEthernet0/11"/>
+        <interface id="11" name="GigabitEthernet0/12"/>
+        <interface id="12" name="GigabitEthernet0/13"/>
+        <interface id="13" name="GigabitEthernet0/14"/>
+    </node>
+    <node name="ISP1-ASN11" type="SIMPLE" subtype="IOSv" location="428,264">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">11</entry>
+        </extensions>
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+        <interface id="11" name="GigabitEthernet0/12"/>
+    </node>
+    <node name="ISP2-ASN22" type="SIMPLE" subtype="IOSv" location="738,264">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">22</entry>
+        </extensions>
+        <interface id="11" name="GigabitEthernet0/12"/>
+        <interface id="12" name="GigabitEthernet0/13"/>
+    </node>
+    <node name="Cust-D-ASN66" type="SIMPLE" subtype="IOSv" location="552,436">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">66</entry>
+        </extensions>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <node name="CustB-Core" type="SIMPLE" subtype="IOSv" location="1094,267">
+        <extensions>
+            <entry key="AutoNetkit.ospf_area" type="String">0</entry>
+            <entry key="AutoNetkit.IGP" type="String">ospf</entry>
+            <entry key="AutoNetkit.ASN" type="Integer">44</entry>
+            <entry key="AutoNetkit.ibgp_role" type="String">RR</entry>
+        </extensions>
+        <interface id="12" name="GigabitEthernet0/13"/>
+        <interface id="13" name="GigabitEthernet0/14"/>
+    </node>
+    <node name="Cust-C-ASN55" type="SIMPLE" subtype="IOSv" location="563,92">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">55</entry>
+        </extensions>
+        <interface id="9" name="GigabitEthernet0/10"/>
+    </node>
+    <node name="CustB-Hub" type="SIMPLE" subtype="IOSv" location="1276,271">
+        <extensions>
+            <entry key="AutoNetkit.IGP" type="String">ospf</entry>
+            <entry key="AutoNetkit.ospf_area" type="String">0</entry>
+            <entry key="AutoNetkit.ibgp_role" type="String">RR</entry>
+            <entry key="AutoNetkit.ASN" type="Integer">44</entry>
+        </extensions>
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="12" name="GigabitEthernet0/13"/>
+    </node>
+    <node name="CustB-EdgeDevice" type="SIMPLE" subtype="IOSv" location="1459,272">
+        <extensions>
+            <entry key="AutoNetkit.ospf_area" type="String">0</entry>
+            <entry key="AutoNetkit.IGP" type="String">ospf</entry>
+            <entry key="AutoNetkit.ASN" type="Integer">44</entry>
+            <entry key="AutoNetkit.ibgp_role" type="String">RRC</entry>
+        </extensions>
+        <interface id="9" name="GigabitEthernet0/10"/>
+    </node>
+    <node name="CustA-Core" type="SIMPLE" subtype="IOSv" location="105,269">
+        <interface id="9" name="GigabitEthernet0/10"/>
+    </node>
+    <node name="BB" type="SIMPLE" subtype="IOSv" location="584,268">
+        <extensions>
+            <entry key="AutoNetkit.ASN" type="Integer">1</entry>
+            <entry key="AutoNetkit.ospf_area" type="String">0</entry>
+            <entry key="AutoNetkit.IGP" type="String">ospf</entry>
+        </extensions>
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+        <interface id="11" name="GigabitEthernet0/12"/>
+        <interface id="12" name="GigabitEthernet0/13"/>
+    </node>
+    <node name="iosxrv-1" type="SIMPLE" subtype="IOS XRv" location="315,156">
+        <interface id="10" name="GigabitEthernet0/0/0/10"/>
+        <interface id="12" name="GigabitEthernet0/0/0/12"/>
+    </node>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:node[10]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[11]/virl:interface[1]" src="/virl:topology/virl:node[7]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[11]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[11]/virl:interface[3]" src="/virl:topology/virl:node[3]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[4]/virl:interface[2]" src="/virl:topology/virl:node[11]/virl:interface[4]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[2]" src="/virl:topology/virl:node[1]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[2]" src="/virl:topology/virl:node[4]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[6]/virl:interface[2]" src="/virl:topology/virl:node[2]/virl:interface[4]"/>
+    <connection dst="/virl:topology/virl:node[8]/virl:interface[2]" src="/virl:topology/virl:node[6]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[9]/virl:interface[1]" src="/virl:topology/virl:node[8]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:node[12]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[3]" src="/virl:topology/virl:node[12]/virl:interface[2]"/>
+</topology>

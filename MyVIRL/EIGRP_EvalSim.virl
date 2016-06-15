@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
+    <node name="iosv-1" type="SIMPLE" subtype="IOSv" location="507,52">
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <node name="iosv-2" type="SIMPLE" subtype="IOSv" location="414,184">
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <node name="iosv-3" type="SIMPLE" subtype="IOSv" location="608,179">
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <node name="iosv-4" type="SIMPLE" subtype="IOSv" location="351,327">
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <node name="iosv-5" type="SIMPLE" subtype="IOSv" location="681,328">
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <node name="iosv-6" type="SIMPLE" subtype="IOSv" location="518,454">
+        <interface id="9" name="GigabitEthernet0/10"/>
+        <interface id="10" name="GigabitEthernet0/11"/>
+    </node>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[2]" src="/virl:topology/virl:node[1]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[5]/virl:interface[1]" src="/virl:topology/virl:node[3]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[4]/virl:interface[2]" src="/virl:topology/virl:node[2]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[6]/virl:interface[1]" src="/virl:topology/virl:node[4]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[6]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[2]"/>
+</topology>
